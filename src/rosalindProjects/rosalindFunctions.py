@@ -1,4 +1,4 @@
-#Problem 1 testing
+#Problem 1
 def countBases(strand):
     returnString = ""
     nucleotides = ['A', 'C', 'G', 'T']
@@ -259,7 +259,7 @@ def infer_mRNA(prot_strand):
 
 
     return permutations % 1000000
-"""
+
 import re
 from Bio import SeqIO
 def find_protein_from_start(seq, start_location):
@@ -271,22 +271,22 @@ def find_protein_from_start(seq, start_location):
 "TGC" : "C", "CGC" : "R", "AGC" : "S", "GGC" : "G", "TGA" : "Stop", "CGA" : "R", "AGA" : "R", "GGA" : "G", "TGG" : "W", "CGG" : "R", "AGG" : "R", "GGG" : "G"}
 
     prot_seq = ""
-        current_pos = start_location
+    current_pos = start_location
 
-        while True:
-            
-            try:
-                codon = seq[current_pos:current_pos+3]
-            except 
-            
-            if codon_table[codon] == "Stop":
-                break
-            elif codon not in codon_table:
-                print("Reached unreadable codon")
-                break
-            else:
-                prot_seq.append(codon_table[codon])
-                current_pos += 3
+    while True:
+        """
+        try:
+            codon = seq[current_pos:current_pos+3]
+        except: //fix this section
+        """
+        if codon_table[codon] == "Stop":
+            break
+        elif codon not in codon_table:
+            print("Reached unreadable codon")
+            break
+        else:
+            prot_seq.append(codon_table[codon])
+            current_pos += 3
 
 def find_ORFs(filename): #Data in the .fasta file
     
