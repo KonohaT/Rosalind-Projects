@@ -1,3 +1,5 @@
+#My solutions to the problems in https://rosalind.info/problems/list-view/
+
 #Problem 1
 def countBases(strand):
     returnString = ""
