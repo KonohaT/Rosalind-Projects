@@ -261,7 +261,7 @@ def infer_mRNA(prot_strand):
 
 
     return permutations % 1000000
-
+"""
 import re
 from Bio import SeqIO
 def find_protein_from_start(seq, start_location):
@@ -276,11 +276,11 @@ def find_protein_from_start(seq, start_location):
     current_pos = start_location
 
     while True:
-        """
+        
         try:
             codon = seq[current_pos:current_pos+3]
         except: //fix this section
-        """
+        
         if codon_table[codon] == "Stop":
             break
         elif codon not in codon_table:
