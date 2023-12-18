@@ -401,5 +401,41 @@ def finding_a_shared_motif():
 
     return max(common_substrings, key=len)
 
+def genbank_intro():
+    from pathlib import Path
+    from Bio import Entrez
+    data_path = Path("Rosalind-Projects/data/")
+    file_name = data_path / "rosalind_gbk.txt"
+    file = open(file_name, 'r')
+    genus_name = file.readline().strip()
+    date_1 = file.readline().strip()
+    date_2 = file.readline().strip()
 
+    Entrez.email = "konohatomonoduval@gmail.com"
+    #handle = Entrez.esearch(db="nucleotide", term=genus_name + "[Organism]")
+    handle = Entrez.esearch(db="nucleotide", term=genus_name + "[Organism]", mindate=date_1, maxdate=date_2, datetype="pdat")
+    record = Entrez.read(handle)
+    print(date_1 + " - " + date_2)
+    return record["Count"]
+
+def data_formats():
+    from pathlib import Path
+    from Bio import Entrez, SeqIO
+    data_path = Path("Rosalind-Projects/data/")
+    file_name = data_path / "rosalind_frmt.txt"
+    file = open(file_name, 'r')
+    ids = file.readline().strip()
+    ids = ids.split(" ")
+
+    Entrez.email = "konohatomonoduval@gmail.com"
+    handle = Entrez.efetch(db="nucleotide", id=ids, rettype="fasta")
+    record = list(SeqIO.parse(handle, 'fasta'))
+    
+    current_length = len(record[0].seq)
+    for segment in record:
+        if len(segment.seq) < current_length:
+            current_length = len(segment.seq)
+            shortest = segment
+
+    return shortest.format("fasta")
 
