@@ -1,5 +1,12 @@
 #My solutions to the problems in https://rosalind.info/problems/list-view/
 
+codon_table = {"UUU" : "F", "CUU" : "L", "AUU" : "I", "GUU" : "V", "UUC" : "F", "CUC" : "L", "AUC" : "I", "GUC" : "V", "UUA" : "L", "CUA" : "L", "AUA" : "I", "GUA" : "V",
+"UUG" : "L", "CUG" : "L", "AUG" : "M", "GUG" : "V", "UCU" : "S", "CCU" : "P", "ACU" : "T", "GCU" : "A", "UCC" : "S", "CCC" : "P", "ACC" : "T",
+"GCC" : "A", "UCA" : "S", "CCA" : "P", "ACA" : "T", "GCA" : "A", "UCG" : "S",
+"CCG" : "P", "ACG" : "T", "GCG" : "A", "UAU" : "Y", "CAU" : "H", "AAU" : "N", "GAU" : "D", "UAC" : "Y", "CGU" : "R", "AGU" : "S",  "GGU" : "G", 
+"CAC" : "H", "AAC" : "N", "GAC" : "D", "UAA" : "Stop", "CAA" : "Q", "AAA" : "K", "GAA" : "E", "UAG" : "Stop", "CAG" : "Q", "AAG" : "K", "GAG" : "E", "UGU" : "C",
+"UGC" : "C", "CGC" : "R", "AGC" : "S", "GGC" : "G", "UGA" : "Stop", "CGA" : "R", "AGA" : "R", "GGA" : "G", "UGG" : "W", "CGG" : "R", "AGG" : "R", "GGG" : "G"}
+
 #Problem 1
 def countBases(strand):
     returnString = ""
@@ -109,12 +116,6 @@ def find_mendelian(hom_dom, hetero, hom_rec):
 
 #Problem 8 - mRNA to Amino Acids
 def translate_RNA(strand):
-    codon_table = {"UUU" : "F", "CUU" : "L", "AUU" : "I", "GUU" : "V", "UUC" : "F", "CUC" : "L", "AUC" : "I", "GUC" : "V", "UUA" : "L", "CUA" : "L", "AUA" : "I", "GUA" : "V",
-"UUG" : "L", "CUG" : "L", "AUG" : "M", "GUG" : "V", "UCU" : "S", "CCU" : "P", "ACU" : "T", "GCU" : "A", "UCC" : "S", "CCC" : "P", "ACC" : "T",
-"GCC" : "A", "UCA" : "S", "CCA" : "P", "ACA" : "T", "GCA" : "A", "UCG" : "S",
-"CCG" : "P", "ACG" : "T", "GCG" : "A", "UAU" : "Y", "CAU" : "H", "AAU" : "N", "GAU" : "D", "UAC" : "Y", "CGU" : "R", "AGU" : "S",  "GGU" : "G", 
-"CAC" : "H", "AAC" : "N", "GAC" : "D", "UAA" : "Stop", "CAA" : "Q", "AAA" : "K", "GAA" : "E", "UAG" : "Stop", "CAG" : "Q", "AAG" : "K", "GAG" : "E", "UGU" : "C",
-"UGC" : "C", "CGC" : "R", "AGC" : "S", "GGC" : "G", "UGA" : "Stop", "CGA" : "R", "AGA" : "R", "GGA" : "G", "UGG" : "W", "CGG" : "R", "AGG" : "R", "GGG" : "G"}
     protein_strand = ""
 
     starting_index = strand.find("AUG")
@@ -261,17 +262,11 @@ def infer_mRNA(prot_strand):
 
 
     return permutations % 1000000
+
 """
 import re
 from Bio import SeqIO
 def find_protein_from_start(seq, start_location):
-    codon_table = {"TTT" : "F", "CTT" : "L", "ATT" : "I", "GTT" : "V", "TTC" : "F", "CTC" : "L", "ATC" : "I", "GTC" : "V", "TTA" : "L", "CTA" : "L", "ATA" : "I", "GTA" : "V",
-"TTG" : "L", "CTG" : "L", "ATG" : "M", "GTG" : "V", "TCT" : "S", "CCT" : "P", "ACT" : "T", "GCT" : "A", "TCC" : "S", "CCC" : "P", "ACC" : "T",
-"GCC" : "A", "TCA" : "S", "CCA" : "P", "ACA" : "T", "GCA" : "A", "TCG" : "S",
-"CCG" : "P", "ACG" : "T", "GCG" : "A", "TAT" : "Y", "CAT" : "H", "AAT" : "N", "GAT" : "D", "TAC" : "Y", "CGT" : "R", "AGT" : "S",  "GGT" : "G", 
-"CAC" : "H", "AAC" : "N", "GAC" : "D", "TAA" : "Stop", "CAA" : "Q", "AAA" : "K", "GAA" : "E", "TAG" : "Stop", "CAG" : "Q", "AAG" : "K", "GAG" : "E", "TGT" : "C",
-"TGC" : "C", "CGC" : "R", "AGC" : "S", "GGC" : "G", "TGA" : "Stop", "CGA" : "R", "AGA" : "R", "GGA" : "G", "TGG" : "W", "CGG" : "R", "AGG" : "R", "GGG" : "G"}
-
     prot_seq = ""
     current_pos = start_location
 
@@ -313,3 +308,98 @@ def find_permut(highest_int):
 
 find_ORFs("sampledata.fasta")
 """
+
+
+def find_ORF2(): #regex not working, debug later...
+    from Bio import SeqIO
+    from pathlib import Path
+    import re
+    data_path = Path("Rosalind-Projects/data/")
+    file_name = data_path / "rosalind_orf.txt"
+    file = open(file_name, 'r')
+    for segment in SeqIO.parse(file, 'fasta'):
+        sequence = str(segment.seq)
+    
+    #ORF_pattern = re.compile("A[TU]G(...)*(?:[TU]AA|[TU]AG|[TU]GA)")
+    ORF_pattern = re.compile('(?=(ATG(?:...)*?)(?=TAA|TAG|TGA))')
+    ORFs = re.match(ORF_pattern, sequence)
+    print(ORFs)
+
+    """
+    def find_start_locations(sequence):
+        start_codon = re.compile("A[TU]G")
+        start_locations = list(match.start for match in re.finditer(start_codon, sequence))
+        return start_locations
+    
+    print(find_start_locations(sequence))
+    """
+
+def finding_a_shared_motif_alt():
+    #This would solve all of my problems, but it's no fun: https://pypi.org/project/pylcs/
+    from Bio import SeqIO
+    from pathlib import Path
+    from itertools import combinations
+    data_path = Path("Rosalind-Projects/data/")
+    file_name = data_path / "rosalind_orf.txt" #replace
+    seq_list = []
+    file = open(file_name, 'r')
+    for segment in SeqIO.parse(file, 'fasta'):
+        sequence = str(segment.seq)
+        seq_list.append(sequence)
+    
+    root = {"base": "R", "children": []}
+
+    def find_all_substrings(string):
+        length = len(string) + 1
+        return [string[x:y] for x, y in combinations(range(length), r=2)]
+
+    def create_child_node(parent, base):
+        new = {"base": base, "children": []}
+        parent["children"].append(new)
+        return new
+
+    def add_new_substring(substring):
+        current = root
+        for known_base in substring:
+            child_bases = [x["base"] for x in current["children"]]
+            if known_base not in child_bases:
+                current = create_child_node(current, known_base)
+            else: 
+                current = next(x for x in current["children"] if x["base"] is known_base)
+
+    #def find_longest_branch(root):
+
+
+    example_string = "ATGGC"
+    substrings = find_all_substrings(example_string)
+    for substring in substrings:
+        add_new_substring(substring)
+    return root
+
+
+def finding_a_shared_motif():
+    from Bio import SeqIO
+    from pathlib import Path
+    from itertools import combinations
+    data_path = Path("Rosalind-Projects/data/")
+    file_name = data_path / "rosalind_lcsm.txt"
+    seq_list = []
+    file = open(file_name, 'r')
+    for segment in SeqIO.parse(file, 'fasta'):
+        sequence = str(segment.seq)
+        seq_list.append(sequence)
+    
+    def find_all_substrings(string):
+        length = len(string) + 1
+        return [string[x:y] for x, y in combinations(range(length), r=2)]
+    
+    substrings_of_first = find_all_substrings(seq_list[0])
+    common_substrings = []
+    for substring in substrings_of_first:
+        if all(substring in string for string in seq_list[1:]):
+            common_substrings.append(substring)
+
+    return max(common_substrings, key=len)
+
+
+
