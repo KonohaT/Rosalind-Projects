@@ -1,5 +1,17 @@
 #My solutions to the problems in https://rosalind.info/problems/list-view/
 
+#import section
+import itertools, requests, re, math, subprocess
+import numpy as np
+from Bio import SeqIO, Entrez
+from time import sleep
+import matplotlib.pyplot as plt
+from operator import attrgetter
+from pathlib import Path
+
+
+
+
 codon_table = {"UUU" : "F", "CUU" : "L", "AUU" : "I", "GUU" : "V", "UUC" : "F", "CUC" : "L", "AUC" : "I", "GUC" : "V", "UUA" : "L", "CUA" : "L", "AUA" : "I", "GUA" : "V",
 "UUG" : "L", "CUG" : "L", "AUG" : "M", "GUG" : "V", "UCU" : "S", "CCU" : "P", "ACU" : "T", "GCU" : "A", "UCC" : "S", "CCC" : "P", "ACC" : "T",
 "GCC" : "A", "UCA" : "S", "CCA" : "P", "ACA" : "T", "GCA" : "A", "UCG" : "S",
@@ -7,22 +19,28 @@ codon_table = {"UUU" : "F", "CUU" : "L", "AUU" : "I", "GUU" : "V", "UUC" : "F", 
 "CAC" : "H", "AAC" : "N", "GAC" : "D", "UAA" : "Stop", "CAA" : "Q", "AAA" : "K", "GAA" : "E", "UAG" : "Stop", "CAG" : "Q", "AAG" : "K", "GAG" : "E", "UGU" : "C",
 "UGC" : "C", "CGC" : "R", "AGC" : "S", "GGC" : "G", "UGA" : "Stop", "CGA" : "R", "AGA" : "R", "GGA" : "G", "UGG" : "W", "CGG" : "R", "AGG" : "R", "GGG" : "G"}
 
+monoisotopic_mass_table = {"A": 71.03711, "C": 103.00919, "D": 115.02694, "E": 129.04259, "F": 147.06841, "G": 57.02146, "H": 137.05891, "I": 113.08406, "K": 128.09496, 
+                           "L": 113.08406, "M": 131.04049, "N": 114.04293, "P": 97.05276, "Q": 128.05858, "R": 156.10111, "S": 87.03203, "T": 101.04768, "V": 99.06841, 
+                           "W": 186.07931, "Y": 163.06333}
+
+
+
 #Problem 1
-def countBases(strand):
-    returnString = ""
+def count_bases(strand):
+    return_string = ""
     nucleotides = ['A', 'C', 'G', 'T']
     for i in range(len(nucleotides)):
         counted = str(strand.count(nucleotides[i]))
-        returnString += counted + " "
-    returnString = returnString.strip()
-    return returnString
+        return_string += counted + " "
+    return_string = return_string.strip()
+    return return_string
 
 #Problem 2
-def transcribeRNA(strand):
+def transcribe_rna(strand):
     return strand.replace("T", "U")
 
 #Problem 3
-def complementDNA(strand):
+def complement_dna(strand):
     reverseStrand = strand [::-1]
 
     replacementTable = {"A": "T", "C":"G", "G":"C", "T":"A"}
@@ -38,7 +56,7 @@ def complementDNA(strand):
 
 
 #Problem 4 Fibbonacci 1
-def count_Rabbits(months, offspringsPer = 1):
+def count_rabbits(months, offspringsPer = 1):
     months = int(months)
     offspringsPer = int(offspringsPer)
 
@@ -57,7 +75,6 @@ def count_Rabbits(months, offspringsPer = 1):
     return current
 
 #Problem 4.1 - Fibonacci 1 redone in NumPy
-import numpy as np
 def count_array_rabbits(months, offsprings_per = 1):
     totals = np.array([1,1])
     i = 2
@@ -68,7 +85,6 @@ def count_array_rabbits(months, offsprings_per = 1):
     return totals[-1]
 
 #Problem 5 GC Content
-from operator import attrgetter
 def findGC(totalString): #Should be able to take entire input as one string
 
     #splits the string into multiple DNA strands with names
@@ -168,18 +184,14 @@ def count_mortal_rabbits(month, lifespan):
     return totals[-1]
 
 #Problem 11 - Expected Offsprings
-from numpy import sum, array
-from math import floor
 def calc_dom_phen(pairings: list):
     if not isinstance(pairings, list):
         raise TypeError
     offsprings_per = 2
-    arr = array(pairings)
-    probabilities = array([1,1,1,0.75, 0.5, 0])
-    return(sum(arr * probabilities) * offsprings_per)
+    arr = np.array(pairings)
+    probabilities = np.array([1,1,1,0.75, 0.5, 0])
+    return(np.sum(arr * probabilities) * offsprings_per)
 
-from Bio import SeqIO
-import numpy as np
 def find_consensus(filename):
     if not isinstance(filename, str):
         raise TypeError
@@ -214,10 +226,7 @@ def find_consensus(filename):
     for i in range(len(profile)):
         print(nt_list[i] + ": " + " ".join(profile[i]))
 
-from Bio import SeqIO
-import requests
-import re
-from time import sleep
+
 
 def find_nglyco_pos(cID):
     if not isinstance(cID, str):
@@ -264,8 +273,7 @@ def infer_mRNA(prot_strand):
     return permutations % 1000000
 
 """
-import re
-from Bio import SeqIO
+
 def find_protein_from_start(seq, start_location):
     prot_seq = ""
     current_pos = start_location
@@ -311,9 +319,6 @@ find_ORFs("sampledata.fasta")
 
 
 def find_ORF2(): #regex not working, debug later...
-    from Bio import SeqIO
-    from pathlib import Path
-    import re
     data_path = Path("Rosalind-Projects/data/")
     file_name = data_path / "rosalind_orf.txt"
     file = open(file_name, 'r')
@@ -336,9 +341,6 @@ def find_ORF2(): #regex not working, debug later...
 
 def finding_a_shared_motif_alt():
     #This would solve all of my problems, but it's no fun: https://pypi.org/project/pylcs/
-    from Bio import SeqIO
-    from pathlib import Path
-    from itertools import combinations
     data_path = Path("Rosalind-Projects/data/")
     file_name = data_path / "rosalind_orf.txt" #replace
     seq_list = []
@@ -351,7 +353,7 @@ def finding_a_shared_motif_alt():
 
     def find_all_substrings(string):
         length = len(string) + 1
-        return [string[x:y] for x, y in combinations(range(length), r=2)]
+        return [string[x:y] for x, y in itertools.combinations(range(length), r=2)]
 
     def create_child_node(parent, base):
         new = {"base": base, "children": []}
@@ -378,9 +380,6 @@ def finding_a_shared_motif_alt():
 
 
 def finding_a_shared_motif():
-    from Bio import SeqIO
-    from pathlib import Path
-    from itertools import combinations
     data_path = Path("Rosalind-Projects/data/")
     file_name = data_path / "rosalind_lcsm.txt"
     seq_list = []
@@ -391,7 +390,7 @@ def finding_a_shared_motif():
     
     def find_all_substrings(string):
         length = len(string) + 1
-        return [string[x:y] for x, y in combinations(range(length), r=2)]
+        return [string[x:y] for x, y in itertools.combinations(range(length), r=2)]
     
     substrings_of_first = find_all_substrings(seq_list[0])
     common_substrings = []
@@ -402,8 +401,6 @@ def finding_a_shared_motif():
     return max(common_substrings, key=len)
 
 def genbank_intro():
-    from pathlib import Path
-    from Bio import Entrez
     data_path = Path("Rosalind-Projects/data/")
     file_name = data_path / "rosalind_gbk.txt"
     file = open(file_name, 'r')
@@ -419,8 +416,6 @@ def genbank_intro():
     return record["Count"]
 
 def data_formats():
-    from pathlib import Path
-    from Bio import Entrez, SeqIO
     data_path = Path("Rosalind-Projects/data/")
     file_name = data_path / "rosalind_frmt.txt"
     file = open(file_name, 'r')
@@ -438,4 +433,93 @@ def data_formats():
             shortest = segment
 
     return shortest.format("fasta")
+
+def rna_splicing():
+
+    data_path = Path("Rosalind-Projects/data/")
+    file_name = data_path / "rosalind_splc.txt"
+    file = open(file_name, 'r')
+
+    seq_list = (list(SeqIO.parse(file, 'fasta')))
+    complete_strand = seq_list[0].seq
+    introns = seq_list[1:]
+
+    #remove introns
+    for intron in introns:
+        complete_strand = complete_strand.replace(str(intron.seq), '')
+
+    #translate to amino acids
+    complete_strand = complete_strand.replace('T', 'U')
+    return translate_RNA(complete_strand)
+
+def parse_fafsas(name: str) -> [str]:
+
+    data_path = Path("Rosalind-Projects/data/")
+    file_name = "rosalind_" + name + ".txt"
+    full_path = data_path / file_name
+    file = open(full_path, 'r')
+
+    seq_list = (list(SeqIO.parse(file, 'fasta')))
+    return seq_list
+
+def copy2clip(txt):
+    cmd='echo '+txt.strip()+'|clip'
+    return subprocess.run(cmd, shell=True)
+
+def overlap_graph():
+    seq_list = parse_fafsas("grph")
+    adjacent = []
+
+    for fafsa in seq_list:
+        suffix = str(fafsa.seq)[-3:]
+
+        for fafsa2 in seq_list:
+            if fafsa2.id != fafsa.id:
+                prefix = str(fafsa2.seq)[0:3]
+                if prefix == suffix:
+                    adjacent.append([fafsa.id, fafsa2.id])
+
+    for pair in adjacent:
+        print(str(pair[0]) + " " + str(pair[1]))
+
+def overlap_graph_2():
+    seq_list = parse_fafsas("grph")
+    adjacent = []
+    for fafsa1, fafsa2 in itertools.combinations(seq_list, 2):
+        if str(fafsa1.seq)[-3:] == str(fafsa2.seq)[0:3]:
+            adjacent.append([fafsa1.id, fafsa2.id])
+
+    for pair in adjacent:
+        print(str(pair[0]) + " " + str(pair[1]))
+
+def independent_alleles(kth_gen: int, n_min: int):
+    pop = 2**kth_gen
+    def binomial_distribution(n_chances, p_probability, r_occurrences):
+        binomial_coefficient = math.factorial(n_chances)/(math.factorial(r_occurrences)*math.factorial(n_chances - r_occurrences))
+        probability = binomial_coefficient * p_probability**r_occurrences * (1-p_probability)**(n_chances - r_occurrences)
+        return probability
+    
+    total_probability = 0
+    for number_of_AaBb in range(n_min, pop + 1):
+        total_probability += binomial_distribution(n_chances= pop, p_probability = 0.25, r_occurrences = number_of_AaBb)
+    
+    return total_probability
+
+def enumerating_gene_order(n_length: int):
+    series = [i for i in range(1, n_length + 1)]
+    permutations = ""
+    perm_count = 0
+    for permutation in itertools.permutations(series):
+        translator = {",": "", "(":"", ")":""}
+        table = str.maketrans(translator)
+        cleaned_string = str(permutation).translate(table)
+        permutations += (cleaned_string + '\n')
+        perm_count += 1
+    return str(perm_count) + '\n' + permutations
+
+def calculating_protein_mass(protein_string: str):
+    weight = sum([monoisotopic_mass_table[letter] for letter in protein_string])
+
+    return weight
+
 
